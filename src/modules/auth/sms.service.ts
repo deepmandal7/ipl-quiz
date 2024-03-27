@@ -13,17 +13,16 @@ import {
   
   @Injectable()
   export default class SmsService {
-    // private twilioClient: any;
-  
     constructor(
       @Inject(ConfigService) private readonly configService: ConfigService,
-      private readonly twilioClient: any,
     ) {
       this.twilioClient = new Twilio(
         configService.get('twilio_account_sid'),
         configService.get('twilio_auth_token'),
       );
     }
+
+    private twilioClient: Twilio
   
     async initiatePhoneNumberVerification(signUpDto: SignUpDto) {
       try {

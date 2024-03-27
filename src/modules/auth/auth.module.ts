@@ -19,7 +19,7 @@ import SmsService from './sms.service';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserService, PasswordService],
+  providers: [AuthService, UserService, PasswordService, SmsService, Object],
     exports: [JwtModule],
 })
 export class AuthModule {}
