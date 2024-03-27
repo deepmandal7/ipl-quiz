@@ -16,15 +16,16 @@ export class UserService {
     @Inject(DatabaseService) private readonly dbService: DatabaseService,
   ) {}
 
-  async insertAdmin(createUserDto: CreateUserDto) {
+  async insertUser(createUserDto: CreateUserDto) {
     try {
       const insertAdmin = await this.dbService.executeQuery(
-        'SELECT * FROM hr_insert_user($1, $2, $3, $4)',
-        [
-          createUserDto.username,
+        'SELECT * FROM ipl_insert_user($1, $2, $3, $4, $5, $6)',
+        [ createUserDto.firstName,
+          createUserDto.lastName,
           createUserDto.email,
-          createUserDto.password,
-          AuthUserEnum.ADMIN,
+          createUserDto.userMobileNo,
+          createUserDto.userCountryCode,
+          createUserDto.status
         ],
       );
       if (insertAdmin.length && insertAdmin[0].status == 1)
@@ -38,24 +39,25 @@ export class UserService {
     }
   }
 
-  async getAdminByEmailPassword(
-    getUserEmailPasswordDto: GetUserEmailPasswordDto,
+  async getUserById(
+    userId : string,
+    userEmailId: string,
+    userMobile: string,
   ) {
     try {
-      const getAdminByEmailPassword = await this.dbService.executeQuery(
-        'SELECT * FROM hr_get_user_email_password($1, $2, $3)',
+      const getUser = await this.dbService.executeQuery(
+        'SELECT * FROM ipl_get_user_by_id($1, $2, $3)',
         [
-          getUserEmailPasswordDto.email,
-          getUserEmailPasswordDto.password,
-          AuthUserEnum.ADMIN,
+          userId,
+          userEmailId,
+          userMobile,
         ],
       );
       if (
-        getAdminByEmailPassword.length &&
-        getAdminByEmailPassword[0].status == 1
+        getUser.length > 0 
       )
-        return getAdminByEmailPassword[0];
-      throw new UnauthorizedException('Admin not found');
+        return getUser[0];
+      throw new UnauthorizedException('User not found');
     } catch (error) {
       throw new HttpException(
         'Failed to get admin',
